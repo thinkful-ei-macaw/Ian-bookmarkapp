@@ -26,13 +26,12 @@ form {
 
 .bookmark-expanded {
   list-style-type: none;
-  text-align: center;
-}
-
-.expanded-header {
-  text-align: center;
 }
 
 #new-bookmark-description {
   height: 100px;
+}
+
+#error-message {
+  color: red;
 }
