@@ -1,0 +1,38 @@
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  display: inline;
+}
+h1 {
+  text-align: center;
+}
+form {
+  text-align: center;
+  border: 1px grey solid;
+}
+.bookmark-title {
+  list-style-type: none;
+  border: 1px solid grey;
+  margin: 3px;
+  padding: 3px;
+}
+.bookmark-list {
+  padding: 0;
+}
+
+.expanded-stars {
+  display: inline;
+}
+
+.bookmark-expanded {
+  list-style-type: none;
+  text-align: center;
+}
+
+.expanded-header {
+  text-align: center;
+}
+
+#new-bookmark-description {
+  height: 100px;
+}
