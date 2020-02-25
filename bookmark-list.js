@@ -1,6 +1,7 @@
 'use strict'
 
-import store from './store.js'
+import store from './store.js';
+import api from './api.js'
 
 // html generation functions
 function generateInitialView() {
@@ -108,7 +109,6 @@ function handleAddingToggle() {
 function handleNewItemSubmit() {
   $('main').on('click', '#new-item-submit', event => {
     event.preventDefault();
-    console.log('handleNewItemSubmit working')
   })
 }
 // render
