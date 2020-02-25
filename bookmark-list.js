@@ -35,7 +35,7 @@ const generateBookmark = function (item) {
       ${item.title}<div class="rating" >${generateRating(item.rating)}</div ></li >`
   } else {
     itemTitle = `<li class="bookmark-expanded js-bookmark" item-id="${item.id}">
-            ${item.title}  <input type="button" value="🗑" id="delete-button"> 
+            ${item.title}  <input type="button" value="🗑" id="delete-button" item-id=${item.id}> 
         </li> 
         <div class="expanded-header">
           <input type="button" value="visit site" id="visit-button"> 
@@ -57,14 +57,14 @@ function generateRating(rating) {
 
 function generateAddBookmark() {
   let view = `<h1>Your Bookmarks</h1>
-          <form class="new-bookmark-form">
+          <form id="new-bookmark-form">
             <div>
               Add New Bookmark 
-              <input type="text" placeholder="http://www.bestwebsite.com" id="new-bookmark-address">
+              <input name="url" type="text" placeholder="http://www.bestwebsite.com" id="new-bookmark-address">
             </div>
             <div>
-              <input type="text" placeholder="title here" id="new-bookmark-name">
-              <select id="cars">
+              <input name="title" type="text" placeholder="title here" id="new-bookmark-name">
+              <select name="rating" id="cars">
                 <option value="1 stars">1 star</option>
                 <option value="2 stars">2 star</option>
                 <option value="3 stars">3 star</option>
@@ -72,7 +72,7 @@ function generateAddBookmark() {
                 <option value="5 stars">5 star</option>
         </select>
             </div>
-            <input type="text" placeholder="add a description here (optional)" id="new-bookmark-description">
+            <input name="desc" type="text" placeholder="add a description here (optional)" id="new-bookmark-description">
             <input type="submit" id="new-item-submit">
           </form>`
   return view;
@@ -82,7 +82,6 @@ function generateErrorScreen() {
   let html = `${generateAddBookmark()}<div id="error-message">${store.error}</div>`;
   return html;
 }
-
 
 
 // event listeners
@@ -109,8 +108,31 @@ function handleAddingToggle() {
 function handleNewItemSubmit() {
   $('main').on('click', '#new-item-submit', event => {
     event.preventDefault();
+    let data = document.getElementById('new-bookmark-form')
+    data = serializeJson(data)
+    console.log(data)
+    api.createBookmark(data)
+      .then(res => res.json())
+      .then((newItem) => {
+        store.addItem(newItem);
+        store.adding = false;
+        render();
+      });
   })
 }
+
+function handleDeleteItem() {
+  $('main').on('click', '#delete-button', event => {
+    let id = getItemIdFromElement(event.target)
+    api.deleteBookmark(id)
+      .then(() => {
+        store.findAndDelete(id);
+        render();
+      })
+  })
+}
+
+
 // render
 function render() {
   let html = ''
@@ -128,9 +150,17 @@ const getItemIdFromElement = function (item) {
     .attr('item-id');
 };
 
+
+function serializeJson(form) {
+  let formData = new FormData(form);;
+  const o = {};
+  formData.forEach((val, name) => o[name] = val);
+  return JSON.stringify(o);
+}
 export default {
   handleNewItemSubmit,
   handleAddingToggle,
   render,
-  handleExpand
+  handleExpand,
+  handleDeleteItem
 }
