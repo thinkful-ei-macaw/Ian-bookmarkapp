@@ -42,18 +42,18 @@ function generateBookmarkString() {
 
 const generateBookmark = function (item) {
   let itemTitle = ''
-  if (item.expanded === false) {
-    itemTitle = `<li class="bookmark-title js-bookmark" item-id="${item.id}">
-      ${item.title}<div class="rating" >${generateRating(item.rating)}</div ></li >`
-  } else {
+  if (item.expanded === true) {
     itemTitle = `<li class="bookmark-expanded js-bookmark" item-id="${item.id}">
-            ${item.title}  <input type="button" value="🗑" id="delete-button" item-id=${item.id}> 
+            ${item.title}  <div type="button" id="delete-button" item-id=${item.id}><i class="fas fa-trash"></i></div> 
         
         <div class="expanded-header">
           <input type="button" value="visit site" id="visit-button" onclick="location.href = '${item.url}';"> 
           <div class="expanded-stars" aria-label="${item.rating} star rating">${generateRating(item.rating)}</div>
         </div>
         <p>${item.desc}</p></li> `
+  } else {
+    itemTitle = `<li class="bookmark-title js-bookmark" item-id="${item.id}">
+      ${item.title}<div class="rating" >${generateRating(item.rating)}</div ></li >`
   }
   return itemTitle;
 }
@@ -192,6 +192,8 @@ function render() {
   store.filter = 0
 }
 
+
+
 const getItemIdFromElement = function (item) {
   return $(item)
     .closest('.js-bookmark')
@@ -212,5 +214,6 @@ export default {
   handleExpand,
   handleDeleteItem,
   handleCloseError,
-  handleFilterChange
+  handleFilterChange,
+  initialRender
 }
