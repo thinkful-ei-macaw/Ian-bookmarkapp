@@ -70,10 +70,8 @@ function generateRating(rating) {
 function generateAddBookmark() {
   let view = `<h1>Your Bookmarks</h1>
           <form id="new-bookmark-form">
-            <div>
-              Add New Bookmark 
+            <h3>Add New Bookmark </h3>
               <input name="url" type="text" placeholder="http://www.bestwebsite.com" id="new-bookmark-address" aria-label="Bookmark URL">
-            </div>
             <div>
               <input name="title" type="text" placeholder="title here" id="new-bookmark-name">
               <select name="rating" id="cars">
@@ -128,6 +126,7 @@ function handleNewItemSubmit() {
         console.log(newItem);
         store.addItem(newItem);
         store.adding = false;
+        store.filter = 0;
         render();
       })
       .catch((error) => {

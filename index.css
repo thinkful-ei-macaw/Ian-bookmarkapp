@@ -1,27 +1,52 @@
+* {
+  box-sizing: border-box;
+}
+main {
+  display: flex;
+  flex-direction: column;
+}
+
 .rating {
   unicode-bidi: bidi-override;
   direction: rtl;
   display: inline;
 }
+
 h1 {
   text-align: center;
+  font-family: "Amiri";
+  border: 2px solid black;
+  background-color: #b2cce3;
+  flex-basis: auto;
+  align-self: center;
+  width: 360px;
+  border-radius: 10px;
+  padding: 0 5px 0 5px;
 }
 form {
   text-align: center;
-  border: 1px grey solid;
 }
 .bookmark-title {
   list-style-type: none;
   border: 1px solid grey;
-  margin: 3px;
+  margin: 6.5px auto 15px auto;
   padding: 3px;
+  width: 400px;
 }
 .bookmark-list {
   padding: 0;
+  margin: 0;
+}
+
+form {
+  margin: 55px auto 2px auto;
 }
 
 .expanded-stars {
   display: inline;
+}
+.rating {
+  display: block;
 }
 
 .bookmark-expanded {
@@ -31,7 +56,86 @@ form {
 #new-bookmark-description {
   height: 100px;
 }
-
+#delete-button {
+  display: inline-block;
+  border: 1px solid black;
+}
 #error-message {
   color: red;
+}
+
+.bookmark-expanded {
+  border: 1px solid black;
+  margin: 0 0 9.5px 0;
+}
+.bookmark-expanded,
+.bookmark-title {
+  background-color: #b2cce3;
+  border-radius: 10px;
+  text-align: center;
+  font-family: "Amiri";
+  font-size: 20px;
+}
+body {
+  background-color: #eae5e5;
+}
+
+.bookmark-expanded > p {
+  font-size: 17px;
+  margin: 0px 25px 0px 25px;
+}
+
+/* new item submit page */
+
+#new-bookmark-form {
+  background-color: #b2cce3;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 50px auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  padding: 10px;
+}
+#new-bookmark-description {
+  width: 300px;
+  align-self: center;
+  margin: 20px 0 20px 0;
+}
+
+#new-item-submit {
+  width: 360px;
+  align-self: center;
+}
+#new-bookmark-address {
+  align-self: center;
+  width: 310px;
+}
+
+input,
+select {
+  border: 5px solid white;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1),
+    0 0 16px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1), 0 0 16px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1), 0 0 16px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+  margin: 0 0 10px 0;
+}
+
+input[type="button"],
+#filter-select,
+input[type="submit"] {
+  padding: 5px 10px 5px 10px;
+  box-sizing: border-box;
+  height: 40px;
+}
+
+@media only screen and (max-width: 420px) {
+  #new-bookmark-form,
+  h1,
+  .bookmark-title {
+    width: auto;
+  }
 }
