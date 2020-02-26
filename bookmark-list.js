@@ -214,6 +214,5 @@ export default {
   handleExpand,
   handleDeleteItem,
   handleCloseError,
-  handleFilterChange,
-  initialRender
+  handleFilterChange
 }
