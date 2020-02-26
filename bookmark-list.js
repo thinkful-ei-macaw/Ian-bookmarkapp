@@ -4,27 +4,39 @@ import store from './store.js';
 import api from './api.js'
 
 // html generation functions
-function generateInitialView() {
+function generateInitialView(func) {
   let view = `<h1>Your Bookmarks</h1>
       <form>
         <input type="submit" name="new" value="new" id="js-new-item"/>
-        <select id="cars">
-          <option value="1 stars">1 star</option>
-          <option value="2 stars">2 star</option>
-          <option value="3 stars">3 star</option>
-          <option value="4 stars">4 star</option>
-          <option value="5 stars">5 star</option>
+        <select id="filter-select" aria-label="Star Rating">
+          <option value="1">1 star</option>
+          <option value="2">2 star</option>
+          <option value="3">3 star</option>
+          <option value="4">4 star</option>
+          <option value="5">5 star</option>
         </select>
+        <input type="button" name="filter-submit" value="filter" id= "filter-submit">
       </form>
         <ul class="bookmark-list">
-        ${generateBookmarkString()}
+        ${func()}
         </ul>`
 
   return view;
 }
 
+function handleFilterChange() {
+  $('main').on('click', '#filter-submit', function (event) {
+    event.preventDefault();
+    let filterValue = $('#filter-select').val();
+    store.filter = parseInt(filterValue);
+    render()
+    console.log(store.filter)
+  });
+}
+
 function generateBookmarkString() {
-  const items = store.bookmarks.map((item) => generateBookmark(item));
+  let items = store.bookmarks.filter(item => item.rating >= store.filter)
+  items = items.map((item) => generateBookmark(item));
   return items.join('');
 }
 
@@ -36,12 +48,12 @@ const generateBookmark = function (item) {
   } else {
     itemTitle = `<li class="bookmark-expanded js-bookmark" item-id="${item.id}">
             ${item.title}  <input type="button" value="🗑" id="delete-button" item-id=${item.id}> 
-        </li> 
+        
         <div class="expanded-header">
-          <input type="button" value="visit site" id="visit-button"> 
-          <div class="expanded-stars">${generateRating(item.rating)}</div>
+          <input type="button" value="visit site" id="visit-button" onclick="location.href = '${item.url}';"> 
+          <div class="expanded-stars" aria-label="${item.rating} star rating">${generateRating(item.rating)}</div>
         </div>
-        <p>${item.description}</p>`
+        <p>${item.desc}</p></li> `
   }
   return itemTitle;
 }
@@ -49,9 +61,9 @@ const generateBookmark = function (item) {
 function generateRating(rating) {
   let stars = ''
   for (let i = 0; i < 5; i++) {
-    if (i < 5 - rating) {
-      stars += `<i class="far fa-star"></i>`
-    } else { stars += `<i class="fas fa-star"></i>` }
+    if (i < rating) {
+      stars += `<i class="fas fa-star"></i>`
+    } else { stars += `<i class="far fa-star"></i>` }
   } return stars;
 }
 
@@ -60,7 +72,7 @@ function generateAddBookmark() {
           <form id="new-bookmark-form">
             <div>
               Add New Bookmark 
-              <input name="url" type="text" placeholder="http://www.bestwebsite.com" id="new-bookmark-address">
+              <input name="url" type="text" placeholder="http://www.bestwebsite.com" id="new-bookmark-address" aria-label="Bookmark URL">
             </div>
             <div>
               <input name="title" type="text" placeholder="title here" id="new-bookmark-name">
@@ -74,6 +86,7 @@ function generateAddBookmark() {
             </div>
             <input name="desc" type="text" placeholder="add a description here (optional)" id="new-bookmark-description">
             <input type="submit" id="new-item-submit">
+            <div class="error-container"></div>
           </form>`
   return view;
 }
@@ -106,17 +119,20 @@ function handleAddingToggle() {
 }
 
 function handleNewItemSubmit() {
-  $('main').on('click', '#new-item-submit', event => {
+  $('main').on('submit', '#new-bookmark-form', event => {
     event.preventDefault();
-    let data = document.getElementById('new-bookmark-form')
-    data = serializeJson(data)
+    let data = serializeJson(event.target)
     console.log(data)
     api.createBookmark(data)
-      .then(res => res.json())
       .then((newItem) => {
+        console.log(newItem);
         store.addItem(newItem);
         store.adding = false;
         render();
+      })
+      .catch((error) => {
+        store.setError(error.message);
+        renderError();
       });
   })
 }
@@ -129,19 +145,51 @@ function handleDeleteItem() {
         store.findAndDelete(id);
         render();
       })
+      .catch((error) => {
+        store.setError(error.message);
+        renderError();
+      })
   })
 }
+
+// error functions
+const generateError = function (message) {
+  return `
+      <section class="error-content">
+        <button id="cancel-error">X</button>
+        <p>${message}</p>
+      </section>
+    `;
+};
+
+const renderError = function () {
+  if (store.error) {
+    const el = generateError(store.error);
+    $('.error-container').html(el);
+  } else {
+    $('.error-container').empty();
+  }
+};
+
+const handleCloseError = function () {
+  $('.error-container').on('click', '#cancel-error', () => {
+    store.setError(null);
+    renderError();
+  });
+};
 
 
 // render
 function render() {
+  renderError();
   let html = ''
   if (store.adding === true) {
     html = generateAddBookmark()
   } else if (store.error != null) {
     html = generateErrorScreen()
-  } else { html = generateInitialView() }
+  } else { html = generateInitialView(generateBookmarkString) }
   $('main').html(html)
+  store.filter = 0
 }
 
 const getItemIdFromElement = function (item) {
@@ -162,5 +210,7 @@ export default {
   handleAddingToggle,
   render,
   handleExpand,
-  handleDeleteItem
+  handleDeleteItem,
+  handleCloseError,
+  handleFilterChange
 }

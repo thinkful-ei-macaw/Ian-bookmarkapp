@@ -5,7 +5,6 @@ import api from './api.js';
 import store from './store.js'
 function main() {
   api.getBookmarks()
-    .then(res => res.json())
     .then((items) => {
       items.forEach((item) => store.addItem(item));
       bookmarkList.render();
@@ -14,7 +13,8 @@ function main() {
   bookmarkList.handleAddingToggle();
   bookmarkList.render();
   bookmarkList.handleExpand();
-  bookmarkList.handleDeleteItem()
+  bookmarkList.handleDeleteItem();
+  bookmarkList.handleFilterChange();
 }
 
 
